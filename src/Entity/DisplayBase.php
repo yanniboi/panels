@@ -88,32 +88,6 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
   protected $parameters = [];
 
   /**
-   * {@inheritdoc}
-   */
-  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
-    parent::postSave($storage, $update);
-    static::routeBuilder()->setRebuildNeeded();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function postDelete(EntityStorageInterface $storage, array $entities) {
-    parent::postDelete($storage, $entities);
-    static::routeBuilder()->setRebuildNeeded();
-  }
-
-  /**
-   * Wraps the route builder.
-   *
-   * @return \Drupal\Core\Routing\RouteBuilderInterface
-   *   An object for state storage.
-   */
-  protected static function routeBuilder() {
-    return \Drupal::service('router.builder');
-  }
-
-  /**
    * Wraps the entity storage for display variants.
    *
    * @return \Drupal\Core\Entity\EntityStorageInterface
