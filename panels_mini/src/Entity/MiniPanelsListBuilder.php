@@ -29,7 +29,7 @@ class MiniPanelsListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\ctools\Entity\DisplayInterface $entity */
+    /** @var \Drupal\panels\Entity\DisplayInterface $entity */
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
 
@@ -41,7 +41,7 @@ class MiniPanelsListBuilder extends ConfigEntityListBuilder {
    */
   public function render() {
     $build = parent::render();
-    $build['table']['#empty'] = $this->t('There are currently no mini panels. <a href=":url">Add a new minipanel.</a>', [':url' => Url::fromRoute('entity.mini_panel.add_form')->toString()]);
+    $build['table']['#empty'] = $this->t('There are currently no mini panels. <a href=":url">Add a new mini panel.</a>', [':url' => Url::fromRoute('entity.mini_panel.add_form')->toString()]);
     return $build;
   }
 

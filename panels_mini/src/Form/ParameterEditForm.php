@@ -8,7 +8,7 @@
 namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\ctools\Entity\DisplayInterface;
+use Drupal\panels\Entity\DisplayInterface;
 
 /**
  * Provides a form for editing a parameter.

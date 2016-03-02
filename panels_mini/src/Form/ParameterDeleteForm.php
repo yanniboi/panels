@@ -9,7 +9,7 @@ namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
-use Drupal\ctools\Entity\DisplayInterface;
+use Drupal\panels\Entity\DisplayInterface;
 /**
  * Provides a form for deleting an access condition.
  */
@@ -18,7 +18,7 @@ class ParameterDeleteForm extends ConfirmFormBase {
   /**
    * The mini_panel entity this static context belongs to.
    *
-   * @var \Drupal\ctools\Entity\DisplayInterface
+   * @var \Drupal\panels\Entity\DisplayInterface
    */
   protected $mini_panel;
 

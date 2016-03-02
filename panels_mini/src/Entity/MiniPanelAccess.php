@@ -68,7 +68,7 @@ class MiniPanelAccess extends EntityAccessControlHandler implements EntityHandle
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    /** @var \Drupal\ctools\Entity\DisplayInterface $entity */
+    /** @var \Drupal\panels\Entity\DisplayInterface $entity */
     if ($operation == 'view') {
       if (!$entity->status()) {
         return AccessResult::forbidden()->addCacheableDependency($entity);

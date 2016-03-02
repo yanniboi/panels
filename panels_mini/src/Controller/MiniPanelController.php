@@ -13,9 +13,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\ctools\Entity\DisplayInterface;
+use Drupal\panels\Entity\DisplayInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\ctools\Entity\DisplayVariantInterface;
+use Drupal\panels\Entity\DisplayVariantInterface;
 
 /**
  * Provides route controllers for Page Manager.
@@ -86,7 +86,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The page entity.
    *
    * @return string
@@ -99,7 +99,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayVariantInterface $display_variant
+   * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
    *   The page variant entity.
    *
    * @return string
@@ -112,7 +112,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The mini_panel entity.
    * @param string $condition_id
    *   The access condition ID.
@@ -128,7 +128,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayVariantInterface $display_variant
+   * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
    *   The page variant entity.
    * @param string $condition_id
    *   The selection condition ID.
@@ -144,7 +144,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayVariantInterface $display_variant
+   * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
    *   The page variant entity.
    * @param string $name
    *   The static context name.
@@ -160,7 +160,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The page entity.
    * @param string $name
    *   The parameter context name.
@@ -175,7 +175,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Enables or disables a Mini panel.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The mini_panel entity.
    * @param string $op
    *   The operation to perform, usually 'enable' or 'disable'.
@@ -199,7 +199,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Presents a list of variants to add to the mini_panel entity.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The mini_panel entity.
    *
    * @return array
@@ -235,7 +235,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Presents a list of access conditions to add to the mini_panel entity.
    *
-   * @param \Drupal\ctools\Entity\DisplayInterface $mini_panel
+   * @param \Drupal\panels\Entity\DisplayInterface $mini_panel
    *   The mini_panel entity.
    *
    * @return array
@@ -263,7 +263,7 @@ class MiniPanelController extends ControllerBase {
   /**
    * Presents a list of selection conditions to add to the page entity.
    *
-   * @param \Drupal\ctools\Entity\DisplayVariantInterface $display_variant
+   * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
    *   The page variant entity.
    *
    * @return array
