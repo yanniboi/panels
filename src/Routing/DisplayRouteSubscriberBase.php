@@ -15,7 +15,7 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * Subscriber for Field UI routes.
  */
-abstract class RouteSubscriber extends RouteSubscriberBase {
+abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
 
   /**
    * Get the entity type id of the display entity.
@@ -32,6 +32,27 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
    * @return string
    */
   abstract protected function getBasePath();
+
+  /**
+   * Get the title for the display collection route.
+   *
+   * @return string
+   */
+  abstract protected function getCollectionTitle();
+
+  /**
+   * Get the title for the add display route.
+   *
+   * @return string
+   */
+  abstract protected function getAddTitle();
+
+  /**
+   * Get the title for the delete display route.
+   *
+   * @return string
+   */
+  abstract protected function getDeleteTitle();
 
   /**
    * The entity type manager
@@ -80,7 +101,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       $path,
       [
         '_entity_list' => $entity_type_id,
-        // @todo: '_title'
+        '_title' => $this->getCollectionTitle(),
       ],
       ['_permission' => $definition->getAdminPermission()],
       []
@@ -91,7 +112,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/add",
       [
         '_entity_form' => "{$entity_type_id}.add",
-        // @todo: '_title'
+        '_title' => $this->getAddTitle(),
       ],
       ['_entity_create_access' => $entity_type_id],
       []
@@ -102,7 +123,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/manage/{$entity_type_id}",
       [
         '_entity_form' => "{$entity_type_id}.edit",
-        // @todo: '_title'
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayTitle'
       ],
       ['_entity_access' => "{$entity_type_id}.update"],
       []
@@ -113,16 +134,34 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/manage/{$entity_type_id}/delete",
       [
         '_entity_form' => "{$entity_type_id}.delete",
-        // @todo: '_title'
+        '_title' => $this->getDeleteTitle(),
       ],
       ['_entity_access' => "{$entity_type_id}.delete"],
       []
     );
     $collection->add("entity.{$entity_type_id}.delete_form", $route);
 
-    // @todo: enable
+    $route = new Route(
+      "{$path}/manage/{$entity_type_id}/enable",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
+        'op' => 'enable',
+      ],
+      ['_entity_access' => "{$entity_type_id}.update"],
+      []
+    );
+    $collection->add("entity.{$entity_type_id}.enable", $route);
 
-    // @todo: disable
+    $route = new Route(
+      "{$path}/manage/{$entity_type_id}/disable",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
+        'op' => 'disable',
+      ],
+      ['_entity_access' => "{$entity_type_id}.update"],
+      []
+    );
+    $collection->add("entity.{$entity_type_id}.disable", $route);
   }
 
   /**
@@ -148,7 +187,16 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => "{$entity_type_id}.update"];
 
-    // @todo: access_condition_select
+    $route = new Route(
+      "{$path}/select",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::selectAccessCondition',
+        '_title' => 'Select access condition',
+      ],
+      $requirements,
+      $options
+    );
+    $collection->add("entity.{$entity_type_id}.access_condition_select", $route);
 
     $route = new Route(
       "{$path}/add/{condition_id}",
@@ -165,7 +213,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/edit/{condition_id}",
       [
         '_form' => '\Drupal\panels\Form\AccessConditionEditForm',
-        // @todo: '_title'
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editAccessConditionTitle',
       ],
       $requirements,
       $options
@@ -176,7 +224,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/delete/{condition_id}",
       [
         '_form' => '\Drupal\panels\Form\AccessConditionDeleteForm',
-        // @todo: '_title'
+        '_title' => 'Delete access condition',
       ],
       $requirements,
       $options
@@ -234,9 +282,27 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       ]
     ];
 
-    // @todo: *_variant_select
+    $route = new Route(
+      "{$path}/add",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::selectVariant',
+        '_title' => 'Select variant',
+      ],
+      ['_entity_access' => "{$entity_type_id}.update"],
+      $options
+    );
+    $collection->add("entity.display_variant.{$entity_type_id}_select", $route);
 
-    // @todo: *_variant_add
+    $route = new Route(
+      "{$path}/add/{variant_plugin_id}",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::addDisplayVariantEntityForm',
+        '_title' => 'Add variant',
+      ],
+      ['_entity_create_access' => "display_variant"],
+      $options
+    );
+    $collection->add("entity.display_variant.{$entity_type_id}_add_form", $route);
 
     // The remaining requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
@@ -245,7 +311,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/variant/{display_variant}/edit",
       [
         '_entity_form' => 'display_variant.edit',
-        // @todo: '_title'
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayVariantTitle',
       ],
       $requirements,
       $options
@@ -264,7 +330,16 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
     $collection->add("entity.display_variant.{$entity_type_id}_delete_form", $route);
 
     // Variant block routes.
-    // @todo: *_variant_select_block
+    $route = new Route(
+      "{$path}/variant/{display_variant}/block/select}",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::selectBlock',
+        '_title' => 'Seelct block',
+      ],
+      $requirements,
+      $options
+    );
+    $collection->add("entity.display_variant.{$entity_type_id}_select_block", $route);
 
     $route = new Route(
       "{$path}/variant/{display_variant}/block/add/{block_id}",
@@ -338,7 +413,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/edit",
       [
         '_form' => '\Drupal\panels\Form\StaticContextEditForm',
-        // @todo: '_title'
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editStaticContextTitle',
       ],
       $requirements,
       $options
@@ -380,7 +455,16 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
 
-    // @todo: *_selection_condition_select
+    $route = new Route(
+      "{$path}/select",
+      [
+        '_controller' => '\Drupal\panels\Controller\DisplayController::selectSelectionCondition',
+        '_title' => 'Select selection condition',
+      ],
+      $requirements,
+      $options
+    );
+    $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_select", $route);
 
     $route = new Route(
       "{$path}/add/{condition_id}",
@@ -397,7 +481,7 @@ abstract class RouteSubscriber extends RouteSubscriberBase {
       "{$path}/edit/{condition_id}",
       [
         '_form' => '\Drupal\panels\Form\SelectionConditionEditForm',
-        // @todo: '_title'
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editSelectionConditionTitle',
       ],
       $requirements,
       $options

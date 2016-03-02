@@ -36,10 +36,6 @@ use Drupal\panels\Entity\DisplayVariantInterface;
  *     "label" = "label",
  *     "uuid" = "uuid"
  *   },
- *   links = {
- *     "edit-form" = "/admin/structure/display_variant/{entity_type}/{entity}/variant/{display_variant}",
- *     "delete-form" = "/admin/structure/display_variant/variant/{display_variant}/delete"
- *   },
  *   config_export = {
  *     "id",
  *     "label",

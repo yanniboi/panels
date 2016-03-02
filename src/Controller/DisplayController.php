@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\panels\Controller\DisplayVariantController.
+ * Contains \Drupal\panels\Controller\DisplayController.
  */
 
 namespace Drupal\panels\Controller;
@@ -13,6 +13,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
+use Drupal\panels\Entity\DisplayInterface;
 use Drupal\panels\Entity\DisplayVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Provides route controllers for Display Variant operations.
  */
-class DisplayVariantController extends ControllerBase {
+class DisplayController extends ControllerBase {
 
   use AjaxFormTrait;
 
@@ -87,6 +88,19 @@ class DisplayVariantController extends ControllerBase {
   /**
    * Route title callback.
    *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   *
+   * @return string
+   *   The title for the display edit form.
+   */
+  public function editDisplayTitle(DisplayInterface $display) {
+    return $this->t('Edit %label', ['%label' => $display->label()]);
+  }
+
+  /**
+   * Route title callback.
+   *
    * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
    *   The display variant entity.
    *
@@ -95,6 +109,22 @@ class DisplayVariantController extends ControllerBase {
    */
   public function editDisplayVariantTitle(DisplayVariantInterface $display_variant) {
     return $this->t('Edit %label variant', ['%label' => $display_variant->label()]);
+  }
+
+  /**
+   * Route title callback.
+   *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   * @param string $condition_id
+   *   The access condition ID.
+   *
+   * @return string
+   *   The title for the access condition edit form.
+   */
+  public function editAccessConditionTitle(DisplayInterface $display, $condition_id) {
+    $access_condition = $display->getAccessCondition($condition_id);
+    return $this->t('Edit %label access condition', ['%label' => $access_condition->getPluginDefinition()['label']]);
   }
 
   /**
@@ -130,6 +160,108 @@ class DisplayVariantController extends ControllerBase {
   }
 
   /**
+   * Route title callback.
+   *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   * @param string $name
+   *   The parameter context name.
+   *
+   * @return string
+   *   The title for the parameter edit form.
+   */
+  public function editParameterTitle(DisplayInterface $display, $name) {
+    return $this->t('Edit @label parameter', ['@label' => $display->getParameter($name)['label']]);
+  }
+
+  /**
+   * Enables or disables a display.
+   *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   * @param string $op
+   *   The operation to perform, usually 'enable' or 'disable'.
+   *
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   A redirect back to the pages list page.
+   */
+  public function performDisplayOperation(DisplayInterface $display, $op) {
+    $display->$op()->save();
+
+    if ($op == 'enable') {
+      drupal_set_message($this->t('%label has been enabled.', ['%label' => $display->label()]));
+    }
+    elseif ($op == 'disable') {
+      drupal_set_message($this->t('%label has been disabled.', ['%label' => $display->label()]));
+    }
+
+    return $this->redirect("entity.{$display->getEntityTypeId()}.collection");
+  }
+
+  /**
+   * Presents a list of variants to add to the display entity.
+   *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   *
+   * @return array
+   *   The variant selection page.
+   */
+  public function selectVariant(DisplayInterface $display) {
+    $build = [
+      '#theme' => 'links',
+      '#links' => [],
+    ];
+    foreach ($this->variantManager->getDefinitions() as $variant_plugin_id => $variant_plugin) {
+      // The following two variants are provided by Drupal Core. They are not
+      // configurable and therefore not compatible with Page Manager but have
+      // similar and confusing labels. Skip them so that they are not shown in
+      // the UI.
+      if (in_array($variant_plugin_id, ['simple_page', 'block_page'])) {
+        continue;
+      }
+
+      $build['#links'][$variant_plugin_id] = [
+        'title' => $variant_plugin['admin_label'],
+        'url' => Url::fromRoute("entity.display_variant.{$display->getEntityTypeId()}_add_form", [
+          'entity' => $display->id(),
+          'variant_plugin_id' => $variant_plugin_id,
+        ]),
+        'attributes' => $this->getAjaxAttributes(),
+      ];
+    }
+    return $build;
+  }
+
+  /**
+   * Presents a list of access conditions to add to the display entity.
+   *
+   * @param \Drupal\panels\Entity\DisplayInterface $display
+   *   The display entity.
+   *
+   * @return array
+   *   The access condition selection page.
+   */
+  public function selectAccessCondition(DisplayInterface $display) {
+    $build = [
+      '#theme' => 'links',
+      '#links' => [],
+    ];
+    $available_plugins = $this->conditionManager->getDefinitionsForContexts($display->getContexts());
+    foreach ($available_plugins as $access_id => $access_condition) {
+      $build['#links'][$access_id] = [
+        'title' => $access_condition['label'],
+        'url' => Url::fromRoute("entity.{$display->getEntityTypeId()}.access_condition_add", [
+          'entity' => $display->id(),
+          'condition_id' => $access_id,
+        ]),
+        'attributes' => $this->getAjaxAttributes(),
+      ];
+    }
+    return $build;
+  }
+
+  /**
    * Presents a list of selection conditions to add to the display entity.
    *
    * @param \Drupal\panels\Entity\DisplayVariantInterface $display_variant
@@ -147,9 +279,8 @@ class DisplayVariantController extends ControllerBase {
     foreach ($available_plugins as $selection_id => $selection_condition) {
       $build['#links'][$selection_id] = [
         'title' => $selection_condition['label'],
-        'url' => Url::fromRoute('entity.display_variant.selection_condition_add', [
-          //'entity_type' => $display_variant->get('display_entity_type'),
-          //'entity' => $display_variant->get('display_entity_id'),
+        'url' => Url::fromRoute("entity.display_variant.{$display_variant->getDisplayEntity()->getEntityTypeId()}_selection_condition_add_form", [
+          'entity' => $display_variant->getDisplayEntity()->id(),
           'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
@@ -199,7 +330,8 @@ class DisplayVariantController extends ControllerBase {
       // Add a link for each available block within each region.
       $build[$category_key]['content']['#links'][$plugin_id] = [
         'title' => $plugin_definition['admin_label'],
-        'url' => Url::fromRoute('entity.display_variant.add_block', [
+        'url' => Url::fromRoute("entity.display_variant.{$display_variant->getDisplayEntity()->getEntityTypeId()}_add_block", [
+          'display' => $display_variant->getDisplayEntity()->id(),
           'display_variant' => $display_variant->id(),
           'block_id' => $plugin_id,
           'region' => $request->query->get('region'),

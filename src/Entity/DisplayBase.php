@@ -11,7 +11,6 @@ use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Core\Condition\ConditionPluginCollection;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\panels\Entity\DisplayVariantInterface;
 
 /**
  * Defines a base class for Display config entities.
@@ -31,13 +30,6 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
    * @var string
    */
   protected $label;
-
-  /**
-   * The path of the display entity.
-   *
-   * @var string
-   */
-  protected $path;
 
   /**
    * The display variant entities.
@@ -170,6 +162,43 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
    */
   public function getAccessLogic() {
     return $this->access_logic;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getParameters() {
+    return $this->parameters;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getParameter($name) {
+    if (!isset($this->parameters[$name])) {
+      $this->setParameter($name, '');
+    }
+    return $this->parameters[$name];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setParameter($name, $type, $label = '') {
+    $this->parameters[$name] = [
+      'machine_name' => $name,
+      'type' => $type,
+      'label' => $label,
+    ];
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeParameter($name) {
+    unset($this->parameters[$name]);
+    return $this;
   }
 
   /**
