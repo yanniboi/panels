@@ -33,13 +33,6 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
   protected $label;
 
   /**
-   * The path of the display entity.
-   *
-   * @var string
-   */
-  protected $path;
-
-  /**
    * The display variant entities.
    *
    * @var \Drupal\panels\Entity\DisplayVariantInterface[].
