@@ -10,7 +10,7 @@ namespace Drupal\panels_mini\Form;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\ctools\Form\DisplayEditForm;
+use Drupal\panels\Form\DisplayEditForm;
 
 /**
  * Provides a form for editing a mini panel entity.

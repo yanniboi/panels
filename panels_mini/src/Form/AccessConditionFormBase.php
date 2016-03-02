@@ -8,8 +8,8 @@
 namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\ctools\Entity\DisplayInterface;
-use Drupal\ctools\Form\ConditionFormBase;
+use Drupal\panels\Entity\DisplayInterface;
+use Drupal\panels\Form\ConditionFormBase;
 
 /**
  * Provides a base form for editing and adding an access condition.
@@ -19,7 +19,7 @@ abstract class AccessConditionFormBase extends ConditionFormBase {
   /**
    * The mini_panel entity this condition belongs to.
    *
-   * @var \Drupal\ctools\Entity\DisplayInterface
+   * @var \Drupal\panels\Entity\DisplayInterface
    */
   protected $mini_panel;
 

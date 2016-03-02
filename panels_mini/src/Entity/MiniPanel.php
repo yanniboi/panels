@@ -7,10 +7,7 @@
 
 namespace Drupal\panels_mini\Entity;
 
-use Drupal\ctools\Entity\DisplayBase;
-use Drupal\Component\Plugin\Context\ContextInterface;
-use Drupal\Core\Plugin\Context\ContextDefinition;
-use Drupal\Core\Plugin\Context\Context;
+use Drupal\panels\Entity\DisplayBase;
 
 /**
  * Defines a Mini Panel entity class.
@@ -46,63 +43,4 @@ use Drupal\Core\Plugin\Context\Context;
  *   },
  * )
  */
-class MiniPanel extends DisplayBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getParameters() {
-    return $this->parameters;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getParameter($name) {
-    if (!isset($this->parameters[$name])) {
-      $this->setParameter($name, '');
-    }
-    return $this->parameters[$name];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setParameter($name, $type, $label = '') {
-    $this->parameters[$name] = [
-      'machine_name' => $name,
-      'type' => $type,
-      'label' => $label,
-    ];
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function removeParameter($name) {
-    unset($this->parameters[$name]);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function addContext($name, ContextInterface $value) {
-    $this->contexts[$name] = $value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getContexts() {
-    return $this->contexts;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setContexts(array $contexts = []) {
-    $this->contexts = $contexts;
-  }
-}
+class MiniPanel extends DisplayBase {}

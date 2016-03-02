@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\PrimitiveInterface;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
-use Drupal\ctools\Entity\DisplayInterface;
+use Drupal\panels\Entity\DisplayInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,7 +30,7 @@ abstract class ParameterFormBase extends FormBase {
   /**
    * The mini_panel entity this static context belongs to.
    *
-   * @var \Drupal\ctools\Entity\DisplayInterface
+   * @var \Drupal\panels\Entity\DisplayInterface
    */
   protected $mini_panel;
 
