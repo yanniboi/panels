@@ -38,7 +38,7 @@ abstract class DisplayEditForm extends DisplayFormBase {
     $form['variant_section']['add_new_variant'] = [
       '#type' => 'link',
       '#title' => $this->t('Add new variant'),
-      '#url' => Url::fromRoute('entity.' . $this->entity->getEntityTypeId() . '.variant_select', [
+      '#url' => Url::fromRoute('entity.display_variant.' . $this->entity->getEntityTypeId() . '_select', [
         $this->entity->getEntityTypeId() => $this->entity->id(),
       ]),
       '#attributes' => $add_button_attributes,

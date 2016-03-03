@@ -10,7 +10,6 @@ namespace Drupal\panels\Entity;
 use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Core\Condition\ConditionPluginCollection;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * Defines a base class for Display config entities.

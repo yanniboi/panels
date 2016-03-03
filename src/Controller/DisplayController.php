@@ -88,14 +88,14 @@ class DisplayController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    *
    * @return string
    *   The title for the display edit form.
    */
-  public function editDisplayTitle(DisplayInterface $display) {
-    return $this->t('Edit %label', ['%label' => $display->label()]);
+  public function editDisplayTitle(DisplayInterface $entity) {
+    return $this->t('Edit %label', ['%label' => $entity->label()]);
   }
 
   /**
@@ -114,7 +114,7 @@ class DisplayController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    * @param string $condition_id
    *   The access condition ID.
@@ -122,8 +122,8 @@ class DisplayController extends ControllerBase {
    * @return string
    *   The title for the access condition edit form.
    */
-  public function editAccessConditionTitle(DisplayInterface $display, $condition_id) {
-    $access_condition = $display->getAccessCondition($condition_id);
+  public function editAccessConditionTitle(DisplayInterface $entity, $condition_id) {
+    $access_condition = $entity->getAccessCondition($condition_id);
     return $this->t('Edit %label access condition', ['%label' => $access_condition->getPluginDefinition()['label']]);
   }
 
@@ -162,7 +162,7 @@ class DisplayController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    * @param string $name
    *   The parameter context name.
@@ -170,14 +170,14 @@ class DisplayController extends ControllerBase {
    * @return string
    *   The title for the parameter edit form.
    */
-  public function editParameterTitle(DisplayInterface $display, $name) {
-    return $this->t('Edit @label parameter', ['@label' => $display->getParameter($name)['label']]);
+  public function editParameterTitle(DisplayInterface $entity, $name) {
+    return $this->t('Edit @label parameter', ['@label' => $entity->getParameter($name)['label']]);
   }
 
   /**
    * Enables or disables a display.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    * @param string $op
    *   The operation to perform, usually 'enable' or 'disable'.
@@ -185,29 +185,29 @@ class DisplayController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
    *   A redirect back to the pages list page.
    */
-  public function performDisplayOperation(DisplayInterface $display, $op) {
-    $display->$op()->save();
+  public function performDisplayOperation(DisplayInterface $entity, $op) {
+    $entity->$op()->save();
 
     if ($op == 'enable') {
-      drupal_set_message($this->t('%label has been enabled.', ['%label' => $display->label()]));
+      drupal_set_message($this->t('%label has been enabled.', ['%label' => $entity->label()]));
     }
     elseif ($op == 'disable') {
-      drupal_set_message($this->t('%label has been disabled.', ['%label' => $display->label()]));
+      drupal_set_message($this->t('%label has been disabled.', ['%label' => $entity->label()]));
     }
 
-    return $this->redirect("entity.{$display->getEntityTypeId()}.collection");
+    return $this->redirect("entity.{$entity->getEntityTypeId()}.collection");
   }
 
   /**
    * Presents a list of variants to add to the display entity.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    *
    * @return array
    *   The variant selection page.
    */
-  public function selectVariant(DisplayInterface $display) {
+  public function selectVariant(DisplayInterface $entity) {
     $build = [
       '#theme' => 'links',
       '#links' => [],
@@ -223,8 +223,8 @@ class DisplayController extends ControllerBase {
 
       $build['#links'][$variant_plugin_id] = [
         'title' => $variant_plugin['admin_label'],
-        'url' => Url::fromRoute("entity.display_variant.{$display->getEntityTypeId()}_add_form", [
-          'entity' => $display->id(),
+        'url' => Url::fromRoute("entity.display_variant.{$entity->getEntityTypeId()}_add_form", [
+          'entity' => $entity->id(),
           'variant_plugin_id' => $variant_plugin_id,
         ]),
         'attributes' => $this->getAjaxAttributes(),
@@ -236,23 +236,23 @@ class DisplayController extends ControllerBase {
   /**
    * Presents a list of access conditions to add to the display entity.
    *
-   * @param \Drupal\panels\Entity\DisplayInterface $display
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The display entity.
    *
    * @return array
    *   The access condition selection page.
    */
-  public function selectAccessCondition(DisplayInterface $display) {
+  public function selectAccessCondition(DisplayInterface $entity) {
     $build = [
       '#theme' => 'links',
       '#links' => [],
     ];
-    $available_plugins = $this->conditionManager->getDefinitionsForContexts($display->getContexts());
+    $available_plugins = $this->conditionManager->getDefinitionsForContexts($entity->getContexts());
     foreach ($available_plugins as $access_id => $access_condition) {
       $build['#links'][$access_id] = [
         'title' => $access_condition['label'],
-        'url' => Url::fromRoute("entity.{$display->getEntityTypeId()}.access_condition_add", [
-          'entity' => $display->id(),
+        'url' => Url::fromRoute("entity.{$entity->getEntityTypeId()}.access_condition_add", [
+          $entity->getEntityTypeId() => $entity->id(),
           'condition_id' => $access_id,
         ]),
         'attributes' => $this->getAjaxAttributes(),

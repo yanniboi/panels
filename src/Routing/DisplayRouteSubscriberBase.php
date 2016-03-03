@@ -97,14 +97,18 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
     $definition = $this->manager->getDefinition($entity_type_id);
     $path = $this->getBasePath();
 
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
+
     $route = new Route(
       $path,
       [
         '_entity_list' => $entity_type_id,
         '_title' => $this->getCollectionTitle(),
       ],
-      ['_permission' => $definition->getAdminPermission()],
-      []
+      ['_permission' => $definition->getAdminPermission()]
     );
     $collection->add("entity.{$entity_type_id}.collection", $route);
 
@@ -114,52 +118,47 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_entity_form' => "{$entity_type_id}.add",
         '_title' => $this->getAddTitle(),
       ],
-      ['_entity_create_access' => $entity_type_id],
-      []
+      ['_entity_create_access' => $entity_type_id]
     );
     $collection->add("entity.{$entity_type_id}.add_form", $route);
 
     $route = new Route(
-      "{$path}/manage/{$entity_type_id}",
+      "{$path}/manage/{{$entity_type_id}}",
       [
         '_entity_form' => "{$entity_type_id}.edit",
-        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayTitle'
-      ],
-      ['_entity_access' => "{$entity_type_id}.update"],
-      []
+        '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayTitle',
+      ] + $defaults,
+      ['_entity_access' => "{$entity_type_id}.update"]
     );
     $collection->add("entity.{$entity_type_id}.edit_form", $route);
 
     $route = new Route(
-      "{$path}/manage/{$entity_type_id}/delete",
+      "{$path}/manage/{{$entity_type_id}}/delete",
       [
         '_entity_form' => "{$entity_type_id}.delete",
         '_title' => $this->getDeleteTitle(),
-      ],
-      ['_entity_access' => "{$entity_type_id}.delete"],
-      []
+      ] + $defaults,
+      ['_entity_access' => "{$entity_type_id}.delete"]
     );
     $collection->add("entity.{$entity_type_id}.delete_form", $route);
 
     $route = new Route(
-      "{$path}/manage/{$entity_type_id}/enable",
+      "{$path}/manage/{{$entity_type_id}}/enable",
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
         'op' => 'enable',
-      ],
-      ['_entity_access' => "{$entity_type_id}.update"],
-      []
+      ] + $defaults,
+      ['_entity_access' => "{$entity_type_id}.update"]
     );
     $collection->add("entity.{$entity_type_id}.enable", $route);
 
     $route = new Route(
-      "{$path}/manage/{$entity_type_id}/disable",
+      "{$path}/manage/{{$entity_type_id}}/disable",
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
         'op' => 'disable',
-      ],
-      ['_entity_access' => "{$entity_type_id}.update"],
-      []
+      ] + $defaults,
+      ['_entity_access' => "{$entity_type_id}.update"]
     );
     $collection->add("entity.{$entity_type_id}.disable", $route);
   }
@@ -173,26 +172,26 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addAccessRoutes(RouteCollection $collection) {
     $entity_type_id = $this->getEntityTypeId();
 
-    // We'll use 'entity' in the path so controllers/forms can use $entity. To
-    // do this, we need to set up the parameter upcasting.
-    $path = $this->getBasePath() . '/manage/{entity}/access';
-    $options = [
-      'parameters' => [
-        'entity' => [
-          'type' => 'entity:' . $entity_type_id,
-        ]
-      ]
-    ];
+    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/access";
+
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => "{$entity_type_id}.update"];
+
+    // We can't depend on the automatic entity upcasting as the controller is
+    // generic.
+    $options = ['parameters' => [$entity_type_id => ['type' => 'entity:' . $entity_type_id]]];
 
     $route = new Route(
       "{$path}/select",
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectAccessCondition',
         '_title' => 'Select access condition',
-      ],
+      ] + $defaults,
       $requirements,
       $options
     );
@@ -203,7 +202,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\AccessConditionAddForm',
         '_title' => 'Add new access condition',
-      ],
+      ] + $defaults,
       $requirements,
       $options
     );
@@ -214,7 +213,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\AccessConditionEditForm',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editAccessConditionTitle',
-      ],
+      ] + $defaults,
       $requirements,
       $options
     );
@@ -225,7 +224,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\AccessConditionDeleteForm',
         '_title' => 'Delete access condition',
-      ],
+      ] + $defaults,
       $requirements,
       $options
     );
@@ -241,16 +240,12 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addParameterRoutes(RouteCollection $collection) {
     $entity_type_id = $this->getEntityTypeId();
 
-    // We'll use 'entity' in the path so controllers/forms can use $entity. To
-    // do this, we need to set up the parameter upcasting.
-    $path = $this->getBasePath() . '/manage/{entity}/parameter';
-    $options = [
-      'parameters' => [
-        'entity' => [
-          'type' => 'entity:' . $entity_type_id,
-        ]
-      ]
-    ];
+    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/parameter";
+
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => "{$entity_type_id}.update"];
@@ -271,25 +266,20 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addVariantRoutes(RouteCollection $collection) {
     $entity_type_id = $this->getEntityTypeId();
 
-    // We'll use 'entity' in the path so controllers/forms can use $entity. To
-    // do this, we need to set up the parameter upcasting.
-    $path = $this->getBasePath() . '/manage/{entity}';
-    $options = [
-      'parameters' => [
-        'entity' => [
-          'type' => 'entity:' . $entity_type_id,
-        ]
-      ]
-    ];
+    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}";
+
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
 
     $route = new Route(
       "{$path}/add",
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectVariant',
         '_title' => 'Select variant',
-      ],
-      ['_entity_access' => "{$entity_type_id}.update"],
-      $options
+      ] + $defaults,
+      ['_entity_access' => "{$entity_type_id}.update"]
     );
     $collection->add("entity.display_variant.{$entity_type_id}_select", $route);
 
@@ -298,9 +288,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::addDisplayVariantEntityForm',
         '_title' => 'Add variant',
-      ],
-      ['_entity_create_access' => "display_variant"],
-      $options
+      ] + $defaults,
+      ['_entity_create_access' => "display_variant"]
     );
     $collection->add("entity.display_variant.{$entity_type_id}_add_form", $route);
 
@@ -312,9 +301,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_entity_form' => 'display_variant.edit',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayVariantTitle',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_edit_form", $route);
 
@@ -323,9 +311,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_entity_form' => 'display_variant.delete',
         '_title' => 'Delete variant'
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_delete_form", $route);
 
@@ -335,9 +322,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectBlock',
         '_title' => 'Seelct block',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_select_block", $route);
 
@@ -346,9 +332,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\VariantPluginAddBlockForm',
         '_title' => 'Add block to variant'
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_add_block", $route);
 
@@ -357,9 +342,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\VariantPluginEditBlockForm',
         '_title' => 'Edit block in variant'
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_edit_block", $route);
 
@@ -368,9 +352,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\VariantPluginDeleteBlockForm',
         '_title' => 'Delete block in variant'
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_delete_block", $route);
   }
@@ -384,16 +367,12 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addStaticContextRoutes(RouteCollection $collection) {
     $entity_type_id = $this->getEntityTypeId();
 
-    // We'll use 'entity' in the path so controllers/forms can use $entity. To
-    // do this, we need to set up the parameter upcasting.
-    $path = $this->getBasePath() . '/manage/{entity}/variant/{display_variant}/context';
-    $options = [
-      'parameters' => [
-        'entity' => [
-          'type' => 'entity:' . $entity_type_id,
-        ]
-      ]
-    ];
+    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/variant/{display_variant}/context";
+
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
@@ -403,9 +382,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\StaticContextAddForm',
         '_title' => 'Add new static context',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_static_context_add_form", $route);
 
@@ -414,9 +392,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\StaticContextEditForm',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editStaticContextTitle',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_static_context_edit_form", $route);
 
@@ -425,9 +402,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\StaticContextDeleteForm',
         '_title' => 'Delete static context',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_static_context_delete_form", $route);
   }
@@ -441,16 +417,12 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addSelectionConditionRoutes(RouteCollection $collection) {
     $entity_type_id = $this->getEntityTypeId();
 
-    // We'll use 'entity' in the path so controllers/forms can use $entity. To
-    // do this, we need to set up the parameter upcasting.
-    $path = $this->getBasePath() . '/manage/{entity}/variant/{display_variant}/selection';
-    $options = [
-      'parameters' => [
-        'entity' => [
-          'type' => 'entity:' . $entity_type_id,
-        ]
-      ]
-    ];
+    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/variant/{display_variant}/selection";
+
+    // To allow abstracted controllers etc, we use a route enhancer to copy the
+    // entity parameter into the 'entity' default.
+    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+    $defaults = ['_display_entity_type' => $entity_type_id];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
@@ -460,9 +432,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectSelectionCondition',
         '_title' => 'Select selection condition',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_select", $route);
 
@@ -471,9 +442,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\SelectionConditionAddForm',
         '_title' => 'Add new selection condition',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_add_form", $route);
 
@@ -482,9 +452,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\SelectionConditionEditForm',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editSelectionConditionTitle',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_editform", $route);
 
@@ -493,9 +462,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       [
         '_form' => '\Drupal\panels\Form\SelectionConditionDeleteForm',
         '_title' => 'Delete selection condition',
-      ],
-      $requirements,
-      $options
+      ] + $defaults,
+      $requirements
     );
     $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_delete_form", $route);
   }
