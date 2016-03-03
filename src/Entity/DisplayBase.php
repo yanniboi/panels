@@ -88,32 +88,6 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
   protected $parameters = [];
 
   /**
-   * {@inheritdoc}
-   */
-  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
-    parent::postSave($storage, $update);
-    static::routeBuilder()->setRebuildNeeded();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function postDelete(EntityStorageInterface $storage, array $entities) {
-    parent::postDelete($storage, $entities);
-    static::routeBuilder()->setRebuildNeeded();
-  }
-
-  /**
-   * Wraps the route builder.
-   *
-   * @return \Drupal\Core\Routing\RouteBuilderInterface
-   *   An object for state storage.
-   */
-  protected static function routeBuilder() {
-    return \Drupal::service('router.builder');
-  }
-
-  /**
    * Wraps the entity storage for display variants.
    *
    * @return \Drupal\Core\Entity\EntityStorageInterface
@@ -170,6 +144,43 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
    */
   public function getAccessLogic() {
     return $this->access_logic;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getParameters() {
+    return $this->parameters;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getParameter($name) {
+    if (!isset($this->parameters[$name])) {
+      $this->setParameter($name, '');
+    }
+    return $this->parameters[$name];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setParameter($name, $type, $label = '') {
+    $this->parameters[$name] = [
+      'machine_name' => $name,
+      'type' => $type,
+      'label' => $label,
+    ];
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeParameter($name) {
+    unset($this->parameters[$name]);
+    return $this;
   }
 
   /**

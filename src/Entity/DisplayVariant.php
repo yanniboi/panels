@@ -13,7 +13,6 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
-use Drupal\panels\Entity\DisplayVariantInterface;
 
 /**
  * Defines the display variant entity.
@@ -190,6 +189,7 @@ class DisplayVariant extends ConfigEntityBase implements DisplayVariantInterface
     // page's cache tags, we need to invalidate them special.
     $tags = [];
     foreach ($entities as $entity) {
+      /* @var \Drupal\Core\Entity\EntityInterface $entity */
       $tags = Cache::mergeTags($tags, $entity->getCacheTagsToInvalidate());
     }
     Cache::invalidateTags($tags);
