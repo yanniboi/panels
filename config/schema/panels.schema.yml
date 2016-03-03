@@ -21,3 +21,55 @@ display_variant.plugin.panels_variant:
       type: string
       label: Storage Id
 
+panels.display_variant.*:
+  type: config_entity
+  label: 'Display variant configuration'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    weight:
+      type: integer
+      label: 'Weight'
+    uuid:
+      type: string
+      label: 'UUID'
+    variant:
+      type: string
+      label: 'Display variant'
+    variant_settings:
+      type: display_variant.plugin.[%parent.variant]
+    display_entity_type:
+      type: string
+      label: 'Parent entity type'
+    display_entity_id:
+      type: string
+      label: 'Parent entity id'
+    selection_criteria:
+      type: sequence
+      label: 'Selection criteria'
+      sequence:
+        - type: condition.plugin.[id]
+          label: 'Selection condition'
+    selection_logic:
+      type: string
+      label: 'Selection logic'
+    static_context:
+      type: sequence
+      label: Static context list
+      sequence:
+        - type: mapping
+          label: 'Static context'
+          mapping:
+            label:
+              type: label
+              label: 'Label of the context'
+            type:
+              type: string
+              label: 'Context type'
+            value:
+              type: string
+              label: 'Context value'

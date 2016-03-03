@@ -2,14 +2,15 @@
 
 /**
  * @file
- * Contains \Drupal\panels_mini\Form\ParameterDeleteForm.
+ * Contains \Drupal\panels\Form\ParameterDeleteForm.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\panels\Entity\DisplayInterface;
+
 /**
  * Provides a form for deleting an access condition.
  */

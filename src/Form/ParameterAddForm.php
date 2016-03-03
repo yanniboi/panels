@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\panels_mini\Form\ParameterEditForm.
+ * Contains \Drupal\panels\Form\ParameterEditForm.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 /**
  * Provides a form for editing a parameter.

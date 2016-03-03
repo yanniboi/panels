@@ -6,7 +6,7 @@
  * Core functionality for the Panels engine.
  */
 
-use \Drupal\page_manager\PageVariantInterface;
+use \Drupal\panels\Entity\DisplayVariantInterface;
 
 define('PANELS_REQUIRED_CTOOLS_API', '2.0-alpha');
 
@@ -37,7 +37,7 @@ function panels_api_version() {
  *
  * @see panels_page_variant_presave()
  */
-function panels_page_variant_create(PageVariantInterface $page_variant) {
+function panels_page_variant_create(DisplayVariantInterface $page_variant) {
   if ($page_variant->getVariantPluginId() == 'panels_variant') {
     /** @var \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant $panels_display */
     $panels_display = $page_variant->getVariantPlugin();
@@ -56,7 +56,7 @@ function panels_page_variant_create(PageVariantInterface $page_variant) {
  *
  * @see panels_page_variant_create()
  */
-function panels_page_variant_presave(PageVariantInterface $page_variant) {
+function panels_page_variant_presave(DisplayVariantInterface $page_variant) {
   if ($page_variant->getVariantPluginId() == 'panels_variant') {
     /** @var \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant $panels_display */
     $panels_display = $page_variant->getVariantPlugin();

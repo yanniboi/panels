@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\panels_mini\Form\ParameterFormBase.
+ * Contains \Drupal\panels\Form\ParameterFormBase.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 use Drupal\Core\Entity\EntityTypeRepositoryInterface;
 use Drupal\Core\Form\FormBase;

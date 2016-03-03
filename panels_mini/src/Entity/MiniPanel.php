@@ -17,7 +17,7 @@ use Drupal\panels\Entity\DisplayBase;
  *   label = @Translation("MiniPanel"),
  *   handlers = {
  *     "list_builder" = "Drupal\panels_mini\Entity\MiniPanelsListBuilder",
- *     "access" = "Drupal\panels_mini\Entity\MiniPanelAccess",
+ *     "access" = "Drupal\panels\Entity\DisplayAccess",
  *     "form" = {
  *       "add" = "Drupal\panels_mini\Form\MiniPanelAddForm",
  *       "edit" = "Drupal\panels_mini\Form\MiniPanelEditForm",
