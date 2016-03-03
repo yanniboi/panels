@@ -99,7 +99,6 @@ abstract class ParameterFormBase extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $mini_panel = NULL, $name = '') {
     $this->mini_panel = $mini_panel;
-    $this->parameter = $this->mini_panel->getParameter($name);
 
     $form['label'] = [
       '#type' => 'textfield',
