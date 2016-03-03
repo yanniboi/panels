@@ -130,6 +130,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
     $entity_type_id = $this->getEntityTypeId();
     $definition = $this->manager->getDefinition($entity_type_id);
     $defaults = $this->getDefaults();
+    $options = ['parameters' => $this->getParameters()];
 
     $route = new Route(
       $path,
@@ -177,7 +178,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
         'op' => 'enable',
       ] + $defaults,
-      ['_entity_access' => "{$entity_type_id}.update"]
+      ['_entity_access' => "{$entity_type_id}.update"],
+      $options
     );
     $collection->add("entity.{$entity_type_id}.enable", $route);
 
@@ -187,7 +189,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_controller' => '\Drupal\panels\Controller\DisplayController::performDisplayOperation',
         'op' => 'disable',
       ] + $defaults,
-      ['_entity_access' => "{$entity_type_id}.update"]
+      ['_entity_access' => "{$entity_type_id}.update"],
+      $options
     );
     $collection->add("entity.{$entity_type_id}.disable", $route);
   }
