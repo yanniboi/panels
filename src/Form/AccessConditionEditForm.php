@@ -5,7 +5,7 @@
  * Contains \Drupal\panels_mini\Form\AccessConditionEditForm.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 /**
  * Provides a form for editing an access condition.
@@ -24,7 +24,7 @@ class AccessConditionEditForm extends AccessConditionFormBase {
    */
   protected function prepareCondition($condition_id) {
     // Load the access condition directly from the mini_panel entity.
-    return $this->mini_panel->getAccessCondition($condition_id);
+    return $this->entity->getAccessCondition($condition_id);
   }
 
   /**

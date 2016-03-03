@@ -5,7 +5,7 @@
  * Contains \Drupal\panels_mini\Form\AccessConditionDeleteForm.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
@@ -17,11 +17,11 @@ use Drupal\panels\Entity\DisplayInterface;
 class AccessConditionDeleteForm extends ConfirmFormBase {
 
   /**
-   * The mini_panel entity this selection condition belongs to.
+   * The display entity this selection condition belongs to.
    *
    * @var \Drupal\panels\Entity\DisplayInterface
    */
-  protected $mini_panel;
+  protected $entity;
 
   /**
    * The access condition used by this form.
@@ -48,7 +48,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->mini_panel->toUrl('edit-form');
+    return $this->entity->toUrl('edit-form');
   }
 
   /**
@@ -61,9 +61,9 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $mini_panel = NULL, $condition_id = NULL) {
-    $this->mini_panel = $mini_panel;
-    $this->accessCondition = $mini_panel->getAccessCondition($condition_id);
+  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $entity = NULL, $condition_id = NULL) {
+    $this->entity = $entity;
+    $this->accessCondition = $entity->getAccessCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -71,8 +71,8 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->mini_panel->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
-    $this->mini_panel->save();
+    $this->entity->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
+    $this->entity->save();
     drupal_set_message($this->t('The access condition %name has been removed.', ['%name' => $this->accessCondition->getPluginDefinition()['label']]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

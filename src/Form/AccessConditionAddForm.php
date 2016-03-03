@@ -5,7 +5,7 @@
  * Contains \Drupal\panels_mini\Form\AccessConditionAddForm.
  */
 
-namespace Drupal\panels_mini\Form;
+namespace Drupal\panels\Form;
 
 use Drupal\Core\Condition\ConditionManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
