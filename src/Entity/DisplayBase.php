@@ -10,6 +10,8 @@ namespace Drupal\panels\Entity;
 use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Core\Condition\ConditionPluginCollection;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\Plugin\Context\Context;
 
 /**
  * Defines a base class for Display config entities.
@@ -185,6 +187,12 @@ abstract class DisplayBase extends ConfigEntityBase implements DisplayInterface 
    * {@inheritdoc}
    */
   public function getContexts() {
+    if (!$this->contexts) {
+      foreach ($this->getParameters() as $param) {
+        $context = new Context(new ContextDefinition($param['type'], $param['machine_name'], FALSE), NULL);
+        $this->addContext($param['machine_name'], $context);
+      }
+    }
     return $this->contexts;
   }
 
