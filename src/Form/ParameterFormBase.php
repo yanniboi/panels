@@ -28,11 +28,11 @@ abstract class ParameterFormBase extends FormBase {
   const NO_CONTEXT_KEY = '__no_context';
 
   /**
-   * The mini_panel entity this static context belongs to.
+   * The display entity this static context belongs to.
    *
    * @var \Drupal\panels\Entity\DisplayInterface
    */
-  protected $mini_panel;
+  protected $entity;
 
   /**
    * The parameter configuration.
@@ -97,8 +97,8 @@ abstract class ParameterFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $mini_panel = NULL, $name = '') {
-    $this->mini_panel = $mini_panel;
+  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $entity = NULL, $name = '') {
+    $this->entity = $entity;
 
     $form['label'] = [
       '#type' => 'textfield',
@@ -177,19 +177,19 @@ abstract class ParameterFormBase extends FormBase {
     $type = $form_state->getValue('type');
 
     if ($type === static::NO_CONTEXT_KEY) {
-      $this->mini_panel->removeParameter($name);
+      $this->entity->removeParameter($name);
       $label = NULL;
     }
     else {
       $label = $form_state->getValue('label');
-      $this->mini_panel->setParameter($name, $type, $label);
+      $this->entity->setParameter($name, $type, $label);
     }
-    $this->mini_panel->save();
+    $this->entity->save();
 
     // Set the submission message.
     drupal_set_message($this->submitMessageText());
 
-    $form_state->setRedirectUrl($this->mini_panel->toUrl('edit-form'));
+    $form_state->setRedirectUrl($this->entity->toUrl('edit-form'));
   }
 
 }

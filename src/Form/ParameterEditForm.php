@@ -39,10 +39,10 @@ class ParameterEditForm extends ParameterFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $mini_panel = NULL, $name = '') {
-    $this->mini_panel = $mini_panel;
-    $this->parameter = $this->mini_panel->getParameter($name);
-    $form = parent::buildForm($form, $form_state, $mini_panel, $name);
+  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $entity = NULL, $name = '') {
+    $this->entity = $entity;
+    $this->parameter = $this->entity->getParameter($name);
+    $form = parent::buildForm($form, $form_state, $entity, $name);
     // The machine name of an existing context is read-only.
     $form['machine_name'] = array(
       '#type' => 'value',

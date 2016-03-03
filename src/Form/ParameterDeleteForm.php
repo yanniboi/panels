@@ -17,11 +17,11 @@ use Drupal\panels\Entity\DisplayInterface;
 class ParameterDeleteForm extends ConfirmFormBase {
 
   /**
-   * The mini_panel entity this static context belongs to.
+   * The display entity this static context belongs to.
    *
    * @var \Drupal\panels\Entity\DisplayInterface
    */
-  protected $mini_panel;
+  protected $entity;
 
   /**
    * The parameter configuration.
@@ -41,14 +41,14 @@ class ParameterDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the parameter %label?', ['%label' => $this->mini_panel->getParameter($this->parameter)['label']]);
+    return $this->t('Are you sure you want to delete the parameter %label?', ['%label' => $this->entity->getParameter($this->parameter)['label']]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->mini_panel->toUrl('edit-form');
+    return $this->entity->toUrl('edit-form');
   }
 
   /**
@@ -61,8 +61,8 @@ class ParameterDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $mini_panel = NULL, $name = NULL) {
-    $this->mini_panel = $mini_panel;
+  public function buildForm(array $form, FormStateInterface $form_state, DisplayInterface $entity = NULL, $name = NULL) {
+    $this->entity = $entity;
     $this->parameter = $name;
     return parent::buildForm($form, $form_state);
   }
@@ -71,9 +71,9 @@ class ParameterDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message($this->t('The parameter %label has been removed.', ['%label' => $this->mini_panel->getParameter($this->parameter)['label']]));
-    $this->mini_panel->removeParameter($this->parameter);
-    $this->mini_panel->save();
+    drupal_set_message($this->t('The parameter %label has been removed.', ['%label' => $this->entity->getParameter($this->parameter)['label']]));
+    $this->entity->removeParameter($this->parameter);
+    $this->entity->save();
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

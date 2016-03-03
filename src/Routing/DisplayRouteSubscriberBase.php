@@ -264,6 +264,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
   protected function addParameterRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
     $defaults = $this->getDefaults();
+    $options = ['parameters' => $this->getParameters()];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => "{$entity_type_id}.update"];
@@ -274,7 +275,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_form' => '\Drupal\panels\Form\ParameterAddForm',
         '_title' => 'Add new parameter',
       ] + $defaults,
-      $requirements
+      $requirements,
+      $options
     );
     $collection->add("entity.{$entity_type_id}.parameter_add", $route);
 
@@ -284,7 +286,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_form' => '\Drupal\panels\Form\ParameterEditForm',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editParameterTitle',
       ] + $defaults,
-      $requirements
+      $requirements,
+      $options
     );
     $collection->add("entity.{$entity_type_id}.parameter_edit", $route);
 
@@ -294,7 +297,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_form' => '\Drupal\panels\Form\ParameterDeleteForm',
         '_title' => 'Delete parameter',
       ] + $defaults,
-      $requirements
+      $requirements,
+      $options
     );
     $collection->add("entity.{$entity_type_id}.parameter_delete", $route);
   }
