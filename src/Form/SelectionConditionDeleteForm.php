@@ -48,7 +48,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->displayVariant->toUrl('edit-form');
+    return $this->displayVariant->toUrl($this->displayVariant->get('display_entity_type') . '-edit-form');
   }
 
   /**

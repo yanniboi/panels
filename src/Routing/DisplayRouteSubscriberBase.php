@@ -75,15 +75,47 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
+    $path = $this->getBasePath();
+    $entity_type_id = $this->getEntityTypeId();
+
     // Display routes.
-    $this->addDisplayRoutes($collection);
-    $this->addParameterRoutes($collection);
-    $this->addAccessRoutes($collection);
+    $this->addDisplayRoutes($collection, $path);
+    $this->addParameterRoutes($collection, $path . "/manage/{{$entity_type_id}}/parameter");
+    $this->addAccessRoutes($collection, $path . "/manage/{{$entity_type_id}}/access");
 
     // Variant routes.
-    $this->addVariantRoutes($collection);
-    $this->addStaticContextRoutes($collection);
-    $this->addSelectionConditionRoutes($collection);
+    $this->addVariantRoutes($collection, $path . "/manage/{{$entity_type_id}}");
+    $this->addStaticContextRoutes($collection, $path . "/manage/{{$entity_type_id}}/variant/{display_variant}/context");
+    $this->addSelectionConditionRoutes($collection, $path . "/manage/{{$entity_type_id}}/variant/{display_variant}/selection");
+  }
+
+  /**
+   * Get the defaults array to merge in for route enhancer support.
+   *
+   * To allow abstracted controllers etc, we use a route enhancer to copy the
+   * entity parameter into the 'entity' default.
+   *
+   * @return array
+   *   The defaults array suitable for adding/merging.
+   *
+   * @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
+   */
+  protected function getDefaults() {
+    return ['_display_entity_type' => $this->getEntityTypeId()];
+  }
+
+  /**
+   * Get the parameter array to merge in for display upcasting support.
+   *
+   * We can't always depend on the automatic entity upcasting as the controller
+   * is abstracted for any display entity, so we have to add it manually.
+   *
+   * @return array
+   *   The options.parameters array suitable for adding/merging.
+   */
+  protected function getParameters() {
+    $entity_type_id = $this->getEntityTypeId();
+    return [$entity_type_id => ['type' => 'entity:' . $entity_type_id]];
   }
 
   /**
@@ -91,16 +123,13 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the display routes.
    */
-  protected function addDisplayRoutes(RouteCollection $collection) {
+  protected function addDisplayRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
     $definition = $this->manager->getDefinition($entity_type_id);
-    $path = $this->getBasePath();
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
+    $defaults = $this->getDefaults();
 
     $route = new Route(
       $path,
@@ -168,23 +197,16 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the display access routes.
    */
-  protected function addAccessRoutes(RouteCollection $collection) {
+  protected function addAccessRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
-
-    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/access";
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
+    $defaults = $this->getDefaults();
+    $options = ['parameters' => $this->getParameters()];
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => "{$entity_type_id}.update"];
-
-    // We can't depend on the automatic entity upcasting as the controller is
-    // generic.
-    $options = ['parameters' => [$entity_type_id => ['type' => 'entity:' . $entity_type_id]]];
 
     $route = new Route(
       "{$path}/select",
@@ -236,20 +258,10 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the display parameter routes.
    */
-  protected function addParameterRoutes(RouteCollection $collection) {
-    $entity_type_id = $this->getEntityTypeId();
-
-    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/parameter";
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
-
-    // All our requirements are the same, so let's set them up once.
-    $requirements = ['_entity_access' => "{$entity_type_id}.update"];
-
+  protected function addParameterRoutes(RouteCollection $collection, $path) {
     // @todo: parameter_add
 
     // @todo: parameter_edit
@@ -262,16 +274,13 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the display variant routes.
    */
-  protected function addVariantRoutes(RouteCollection $collection) {
+  protected function addVariantRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
-
-    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}";
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
+    $defaults = $this->getDefaults();
+    $options = ['parameters' =>$this->getParameters()];
 
     $route = new Route(
       "{$path}/add",
@@ -279,7 +288,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectVariant',
         '_title' => 'Select variant',
       ] + $defaults,
-      ['_entity_access' => "{$entity_type_id}.update"]
+      ['_entity_access' => "{$entity_type_id}.update"],
+      $options
     );
     $collection->add("entity.display_variant.{$entity_type_id}_select", $route);
 
@@ -289,7 +299,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_controller' => '\Drupal\panels\Controller\DisplayController::addDisplayVariantEntityForm',
         '_title' => 'Add variant',
       ] + $defaults,
-      ['_entity_create_access' => "display_variant"]
+      ['_entity_create_access' => "display_variant"],
+      $options
     );
     $collection->add("entity.display_variant.{$entity_type_id}_add_form", $route);
 
@@ -302,7 +313,8 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_entity_form' => 'display_variant.edit',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayVariantTitle',
       ] + $defaults,
-      $requirements
+      $requirements,
+      $options
     );
     $collection->add("entity.display_variant.{$entity_type_id}_edit_form", $route);
 
@@ -318,7 +330,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
 
     // Variant block routes.
     $route = new Route(
-      "{$path}/variant/{display_variant}/block/select}",
+      "{$path}/variant/{display_variant}/block/select",
       [
         '_controller' => '\Drupal\panels\Controller\DisplayController::selectBlock',
         '_title' => 'Seelct block',
@@ -363,16 +375,12 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the variant static context routes.
    */
-  protected function addStaticContextRoutes(RouteCollection $collection) {
+  protected function addStaticContextRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
-
-    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/variant/{display_variant}/context";
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
+    $defaults = $this->getDefaults();
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
@@ -388,7 +396,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
     $collection->add("entity.display_variant.{$entity_type_id}_static_context_add_form", $route);
 
     $route = new Route(
-      "{$path}/edit",
+      "{$path}/edit/{name}",
       [
         '_form' => '\Drupal\panels\Form\StaticContextEditForm',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editStaticContextTitle',
@@ -398,7 +406,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
     $collection->add("entity.display_variant.{$entity_type_id}_static_context_edit_form", $route);
 
     $route = new Route(
-      "{$path}/delete",
+      "{$path}/delete/{name}",
       [
         '_form' => '\Drupal\panels\Form\StaticContextDeleteForm',
         '_title' => 'Delete static context',
@@ -413,16 +421,12 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
    *
    * @param \Symfony\Component\Routing\RouteCollection $collection
    *   The route collection for adding routes.
+   * @param string $path
+   *   The base path to use for the variant selection condition routes.
    */
-  protected function addSelectionConditionRoutes(RouteCollection $collection) {
+  protected function addSelectionConditionRoutes(RouteCollection $collection, $path) {
     $entity_type_id = $this->getEntityTypeId();
-
-    $path = $this->getBasePath() . "/manage/{{$entity_type_id}}/variant/{display_variant}/selection";
-
-    // To allow abstracted controllers etc, we use a route enhancer to copy the
-    // entity parameter into the 'entity' default.
-    // @see \Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    $defaults = ['_display_entity_type' => $entity_type_id];
+    $defaults = $this->getDefaults();
 
     // All our requirements are the same, so let's set them up once.
     $requirements = ['_entity_access' => 'display_variant.update'];
@@ -455,7 +459,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
       ] + $defaults,
       $requirements
     );
-    $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_editform", $route);
+    $collection->add("entity.display_variant.{$entity_type_id}_selection_condition_edit_form", $route);
 
     $route = new Route(
       "{$path}/delete/{condition_id}",

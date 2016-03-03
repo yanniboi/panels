@@ -224,7 +224,7 @@ class DisplayController extends ControllerBase {
       $build['#links'][$variant_plugin_id] = [
         'title' => $variant_plugin['admin_label'],
         'url' => Url::fromRoute("entity.display_variant.{$entity->getEntityTypeId()}_add_form", [
-          'entity' => $entity->id(),
+          $entity->getEntityTypeId() => $entity->id(),
           'variant_plugin_id' => $variant_plugin_id,
         ]),
         'attributes' => $this->getAjaxAttributes(),
@@ -280,7 +280,7 @@ class DisplayController extends ControllerBase {
       $build['#links'][$selection_id] = [
         'title' => $selection_condition['label'],
         'url' => Url::fromRoute("entity.display_variant.{$display_variant->getDisplayEntity()->getEntityTypeId()}_selection_condition_add_form", [
-          'entity' => $display_variant->getDisplayEntity()->id(),
+          $display_variant->getDisplayEntity()->getEntityTypeId() => $display_variant->getDisplayEntity()->id(),
           'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
@@ -331,7 +331,7 @@ class DisplayController extends ControllerBase {
       $build[$category_key]['content']['#links'][$plugin_id] = [
         'title' => $plugin_definition['admin_label'],
         'url' => Url::fromRoute("entity.display_variant.{$display_variant->getDisplayEntity()->getEntityTypeId()}_add_block", [
-          'display' => $display_variant->getDisplayEntity()->id(),
+          $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
           'display_variant' => $display_variant->id(),
           'block_id' => $plugin_id,
           'region' => $request->query->get('region'),
@@ -345,9 +345,7 @@ class DisplayController extends ControllerBase {
   /**
    * Build the mini_panel variant entity add form.
    *
-   * @param string $entity_type
-   *   The entity type this display variant belongs to.
-   * @param string $entity
+   * @param \Drupal\panels\Entity\DisplayInterface $entity
    *   The entity this display variant belongs to.
    * @param string $variant_plugin_id
    *   The variant plugin ID.
@@ -355,11 +353,11 @@ class DisplayController extends ControllerBase {
    * @return array
    *   The mini_panel variant entity add form.
    */
-  public function addDisplayVariantEntityForm($entity_type, $entity, $variant_plugin_id) {
+  public function addDisplayVariantEntityForm(DisplayInterface $entity, $variant_plugin_id) {
     // Create a mini_panel variant entity.
     $variant_entity = $this->entityTypeManager()->getStorage('display_variant')->create([
-      'display_entity_type' => $entity_type,
-      'display_entity_id' => $entity,
+      'display_entity_type' => $entity->getEntityTypeId(),
+      'display_entity_id' => $entity->id(),
       'variant' => $variant_plugin_id,
     ]);
 

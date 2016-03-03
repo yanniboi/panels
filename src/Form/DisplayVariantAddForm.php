@@ -27,11 +27,7 @@ class DisplayVariantAddForm extends DisplayVariantFormBase {
    */
   public function save(array $form, FormStateInterface $form_state) {
     parent::save($form, $form_state);
-    $form_state->setRedirectUrl($this->getEntity()->toUrl('edit-form', [
-      'entity' => $this->getEntity()->get('display_entity_id'),
-      'entity_type' => $this->getEntity()->get('display_entity_type'),
-      'variant_display' => $this->getEntity()->id(),
-    ]));
+    $form_state->setRedirectUrl($this->getEntity()->toUrl($this->getEntity()->get('display_entity_type') . '-edit-form'));
   }
 
 }

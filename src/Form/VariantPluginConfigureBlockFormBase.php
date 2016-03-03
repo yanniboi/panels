@@ -122,7 +122,7 @@ abstract class VariantPluginConfigureBlockFormBase extends FormBase {
     $this->getVariantPlugin()->updateBlock($this->block->getConfiguration()['uuid'], ['region' => $form_state->getValue('region')]);
     $this->displayVariant->save();
 
-    $form_state->setRedirectUrl($this->displayVariant->toUrl('edit-form'));
+    $form_state->setRedirectUrl($this->displayVariant->toUrl($this->displayVariant->get('display_entity_type') . '-edit-form'));
   }
 
   /**

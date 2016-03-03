@@ -395,10 +395,19 @@ class DisplayVariant extends ConfigEntityBase implements DisplayVariantInterface
   /**
    * {@inheritdoc}
    */
+  protected function linkTemplates() {
+    $link_templates = parent::linkTemplates();
+    $link_templates["{$this->display_entity_type}-edit-form"] = 'entity.display_variant.' . $this->display_entity_type . '_edit_form';
+    $link_templates["{$this->display_entity_type}-delete-form"] = 'entity.display_variant.' . $this->display_entity_type . '_delete_form';
+    return $link_templates;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function urlRouteParameters($rel) {
     $parameters = parent::urlRouteParameters($rel);
-    $parameters['entity_type'] = $this->get('display_entity_type');
-    $parameters['entity'] = $this->get('display_entity_id');
+    $parameters[$this->get('display_entity_type')] = $this->get('display_entity_id');
     return $parameters;
   }
 

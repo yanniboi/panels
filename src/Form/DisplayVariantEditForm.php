@@ -72,8 +72,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
       $form['add'] = [
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
-        '#url' => Url::fromRoute('entity.display_variant.select_block', [
-          //'page' => $display_variant->get('page'),
+        '#url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_select_block", [
+          $this->getEntity()->get('display_entity_type') => $this->getEntity()->get('display_entity_id'),
           'display_variant' => $display_variant->id(),
         ]),
         '#attributes' => $add_button_attributes,
@@ -176,9 +176,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
           $operations = [];
           $operations['edit'] = [
             'title' => $this->t('Edit'),
-            'url' => Url::fromRoute('entity.display_variant.edit_block', [
-              'entity_type' => $display_variant->get('display_entity_type'),
-              'entity' => $display_variant->get('display_entity_id'),
+            'url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_edit_block", [
+              $this->getEntity()->get('display_entity_type') => $this->getEntity()->get('display_entity_id'),
               'display_variant' => $display_variant->id(),
               'block_id' => $block_id,
             ]),
@@ -186,9 +185,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
           ];
           $operations['delete'] = [
             'title' => $this->t('Delete'),
-            'url' => Url::fromRoute('entity.display_variant.delete_block', [
-              'entity_type' => $display_variant->get('display_entity_type'),
-              'entity' => $display_variant->get('display_entity_id'),
+            'url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_delete_block", [
+              $this->getEntity()->get('display_entity_type') => $this->getEntity()->get('display_entity_id'),
               'display_variant' => $display_variant->id(),
               'block_id' => $block_id,
             ]),
@@ -228,7 +226,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
     $form['add'] = [
       '#type' => 'link',
       '#title' => $this->t('Add new selection condition'),
-      '#url' => Url::fromRoute('entity.display_variant.selection_condition_select', [
+      '#url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_selection_condition_select", [
+        $this->getEntity()->get('display_entity_type') => $this->getEntity()->get('display_entity_id'),
         'display_variant' => $display_variant->id(),
       ]),
       '#attributes' => $add_button_attributes,
@@ -267,9 +266,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
       $operations = [];
       $operations['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => Url::fromRoute('entity.display_variant.selection_condition_edit', [
-          'entity_type' => $display_variant->get('display_entity_type'),
-          'entity' => $display_variant->get('display_entity_id'),
+        'url' => Url::fromRoute("entity.display_variant.{$display_variant->get('display_entity_type')}_selection_condition_edit_form", [
+          $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
           'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
@@ -277,9 +275,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
       ];
       $operations['delete'] = [
         'title' => $this->t('Delete'),
-        'url' => Url::fromRoute('entity.display_variant.selection_condition_delete', [
-          'entity_type' => $display_variant->get('display_entity_type'),
-          'entity' => $display_variant->get('display_entity_id'),
+        'url' => Url::fromRoute("entity.display_variant.{$display_variant->get('display_entity_type')}_selection_condition_delete_form", [
+          $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
           'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
@@ -316,9 +313,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
     $form['add'] = [
       '#type' => 'link',
       '#title' => $this->t('Add new static context'),
-      '#url' => Url::fromRoute('entity.display_variant.static_context_add', [
-        'entity_type' => $display_variant->get('display_entity_type'),
-        'entity' => $display_variant->get('display_entity_id'),
+      '#url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_static_context_add_form", [
+        $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
         'display_variant' => $display_variant->id(),
       ]),
       '#attributes' => $add_button_attributes,
@@ -358,7 +354,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
       if ($display_variant->getStaticContext($name)) {
         $operations['edit'] = [
           'title' => $this->t('Edit'),
-          'url' => Url::fromRoute('entity.display_variant.static_context_edit', [
+          'url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_static_context_edit_form", [
+            $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
             'display_variant' => $display_variant->id(),
             'name' => $name,
           ]),
@@ -366,7 +363,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
         ];
         $operations['delete'] = [
           'title' => $this->t('Delete'),
-          'url' => Url::fromRoute('entity.display_variant.static_context_delete', [
+          'url' => Url::fromRoute("entity.display_variant.{$this->getEntity()->get('display_entity_type')}_static_context_delete_form", [
+            $display_variant->get('display_entity_type') => $display_variant->get('display_entity_id'),
             'display_variant' => $display_variant->id(),
             'name' => $name,
           ]),

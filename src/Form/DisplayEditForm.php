@@ -84,11 +84,11 @@ abstract class DisplayEditForm extends DisplayFormBase {
       $operations = [];
       $operations['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => $display_variant->toUrl('edit-form'),
+        'url' => $display_variant->toUrl($this->entity->getEntityTypeId() . '-edit-form'),
       ];
       $operations['delete'] = [
         'title' => $this->t('Delete'),
-        'url' => $display_variant->toUrl('delete-form'),
+        'url' => $display_variant->toUrl($this->entity->getEntityTypeId() . '-delete-form'),
       ];
       $row['operations'] = [
         '#type' => 'operations',
