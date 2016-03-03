@@ -8,7 +8,8 @@
 namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\ctools\Form\DisplayFormBase;
+use Drupal\panels\Form\DisplayFormBase;
+
 /**
  * Provides a form for adding a new mini panel entity.
  */

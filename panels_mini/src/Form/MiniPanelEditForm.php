@@ -8,7 +8,6 @@
 namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
 use Drupal\panels\Form\DisplayEditForm;
 
@@ -18,20 +17,6 @@ use Drupal\panels\Form\DisplayEditForm;
 class MiniPanelEditForm extends DisplayEditForm {
 
   use AjaxFormTrait;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
-
-    // @TODO remove once entity.{entity_type}.variant_select exists.
-    $form['variant_section']['add_new_variant']['#url'] = Url::fromRoute('panels_mini.variant_select', [
-      $this->entity->getEntityTypeId() => $this->entity->id(),
-    ]);
-
-    return $form;
-  }
 
   /**
    * {@inheritdoc}
