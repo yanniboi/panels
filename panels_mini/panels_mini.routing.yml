@@ -12,7 +12,6 @@ entity.mini_panel.parameter_edit:
   path: '/admin/structure/block/mini-panels/manage/{mini_panel}/parameter/edit/{name}'
   defaults:
     _form: '\Drupal\panels_mini\Form\ParameterEditForm'
-#    _title_callback: '\Drupal\panels_mini\Controller\MiniPanelController::editParameterTitle'
     _title: 'Edit parameter'
   requirements:
     _entity_access: mini_panel.update
