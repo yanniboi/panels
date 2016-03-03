@@ -10,7 +10,6 @@ namespace Drupal\panels\Entity;
 use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
-use Drupal\panels\Entity\DisplayVariantInterface;
 
 /**
  * Provides an interface for page entities.
@@ -41,7 +40,7 @@ interface DisplayInterface extends ConfigEntityInterface, EntityWithPluginCollec
    * @param string $variant_id
    *   The variant ID.
    *
-   * @return \Drupal\page_manager\PageVariantInterface
+   * @return \Drupal\panels\Entity\DisplayVariantInterface
    *   The variant object.
    */
   public function getVariant($variant_id);
