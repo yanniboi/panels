@@ -1,3 +1,4 @@
+# Schema for the panels display variant plugin.
 display_variant.plugin.panels_variant:
   type: ctools.block_display_variant
   label: 'Panels display variant'
@@ -21,6 +22,43 @@ display_variant.plugin.panels_variant:
       type: string
       label: Storage Id
 
+# Base schema for display config entities.
+panels.display_base:
+  type: config_entity
+  mapping:
+    id:
+      type: string
+      label: 'Machine-readable name'
+    label:
+      type: label
+      label: 'Label'
+    access_logic:
+      type: string
+      label: 'Access logic'
+    access_conditions:
+      type: sequence
+      label: 'Access Conditions'
+      sequence:
+        - type: condition.plugin.[id]
+          label: 'Access Condition'
+    parameters:
+      type: sequence
+      label: Parameter context list
+      sequence:
+        - type: mapping
+          label: Parameter context
+          mapping:
+            machine_name:
+              type: string
+              label: 'Machine-readable name'
+            label:
+              type: label
+              label: 'Label of the context'
+            type:
+              type: string
+              label: 'Context type'
+
+# Schema for the display_variant config entity.
 panels.display_variant.*:
   type: config_entity
   label: 'Display variant configuration'
