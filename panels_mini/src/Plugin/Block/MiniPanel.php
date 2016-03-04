@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
+use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Plugin\Exception\ContextException;
 use Drupal\panels\Entity\DisplayVariantInterface;
@@ -91,6 +92,14 @@ class MiniPanel extends BlockBase implements ContextAwarePluginInterface, Contai
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['view_mode'] = $form_state->getValue('view_mode');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function blockAccess(AccountInterface $account) {
+    $mini_panel = $this->entityManager->getStorage('mini_panel')->load($this->getDerivativeId());
+    return $mini_panel->access('view', $account, TRUE);
   }
 
   /**
