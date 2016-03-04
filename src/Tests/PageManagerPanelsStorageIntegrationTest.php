@@ -7,7 +7,7 @@
 
 namespace Drupal\panels\Tests;
 
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\panels\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -63,10 +63,10 @@ class PageManagerPanelsStorageIntegrationTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
 
-    /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
-    $page_variant = PageVariant::load('panels_1');
+    /** @var \Drupal\panels\Entity\DisplayVariantInterface $display_variant */
+    $display_variant = DisplayVariant::load('panels_1');
     /** @var \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant $panels_display */
-    $panels_display = $page_variant->getVariantPlugin();
+    $panels_display = $display_variant->getVariantPlugin();
 
     // Make sure the storage type and id were set to the right value.
     $this->assertEqual($panels_display->getStorageType(), 'page_manager');
