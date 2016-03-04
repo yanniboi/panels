@@ -345,7 +345,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
     $requirements = ['_entity_access' => 'display_variant.update'];
 
     $route = new Route(
-      "{$path}/variant/{display_variant}/edit",
+      "{$path}/variant/{display_variant}",
       [
         '_entity_form' => 'display_variant.edit',
         '_title_callback' => '\Drupal\panels\Controller\DisplayController::editDisplayVariantTitle',
