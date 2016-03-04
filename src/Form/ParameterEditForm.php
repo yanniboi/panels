@@ -26,7 +26,7 @@ class ParameterEditForm extends ParameterFormBase {
    * {@inheritdoc}
    */
   protected function submitButtonText() {
-    return $this->t('Update Parameter');
+    return $this->t('Update parameter');
   }
 
   /**
