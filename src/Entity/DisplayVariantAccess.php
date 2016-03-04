@@ -79,7 +79,7 @@ class DisplayVariantAccess extends EntityAccessControlHandler implements EntityH
       }
       return AccessResult::allowedIf($this->resolveConditions($conditions, $entity->getSelectionLogic()));
     }
-    return parent::checkAccess($entity, $operation, $account);
+    return $entity->getDisplayEntity()->access($operation, $account, TRUE);
   }
 
 }

@@ -29,7 +29,6 @@ use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
  *       "delete" = "Drupal\panels\Form\DisplayVariantDeleteForm",
  *     }
  *   },
- *   admin_permission = "administer blocks",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",

@@ -336,7 +336,7 @@ abstract class DisplayRouteSubscriberBase extends RouteSubscriberBase {
         '_controller' => '\Drupal\panels\Controller\DisplayController::addDisplayVariantEntityForm',
         '_title' => 'Add variant',
       ] + $defaults,
-      ['_entity_create_access' => "display_variant"],
+      ['_entity_access' => "{$entity_type_id}.update"],
       $options
     );
     $collection->add("entity.display_variant.{$entity_type_id}_add_form", $route);
