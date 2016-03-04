@@ -9,12 +9,12 @@ namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\panels\Form\DisplayEditForm;
+use Drupal\panels\Form\DisplayEditFormBase;
 
 /**
  * Provides a form for editing a mini panel entity.
  */
-class MiniPanelEditForm extends DisplayEditForm {
+class MiniPanelEditForm extends DisplayEditFormBase {
 
   use AjaxFormTrait;
 

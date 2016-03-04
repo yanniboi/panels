@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\panels\Form\DisplayEditForm.
+ * Contains \Drupal\panels\Form\DisplayEditFormBase.
  */
 
 namespace Drupal\panels\Form;
@@ -15,7 +15,7 @@ use Drupal\ctools\Form\AjaxFormTrait;
 /**
  * Provides a form for editing a display entity.
  */
-abstract class DisplayEditForm extends DisplayFormBase {
+abstract class DisplayEditFormBase extends DisplayFormBase {
 
   use AjaxFormTrait;
 
