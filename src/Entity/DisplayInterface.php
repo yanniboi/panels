@@ -170,7 +170,6 @@ interface DisplayInterface extends ConfigEntityInterface, EntityWithPluginCollec
    */
   public function setContexts(array $contexts);
 
-
   /**
    * Sets the context for a given name.
    *
