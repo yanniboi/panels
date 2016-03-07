@@ -76,13 +76,13 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
     if ($id && ($display_variant = $this->loadDisplayVariant($id))) {
       $variant_plugin = $display_variant->getVariantPlugin();
       if (!($variant_plugin instanceof PanelsDisplayVariant)) {
-        throw new \Exception("Page display variant doesn't use a Panels display variant");
+        throw new \Exception("Display variant doesn't use a Panels display variant");
       }
       $variant_plugin->setConfiguration($panels_display->getConfiguration());
       $display_variant->save();
     }
     else {
-      throw new \Exception("Couldn't find page display variant to store Panels display");
+      throw new \Exception("Couldn't find display variant to store Panels display");
     }
   }
 

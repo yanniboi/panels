@@ -121,7 +121,7 @@ class PanelsStorageTest extends UnitTestCase {
    * @covers ::save
    *
    * @expectedException \Exception
-   * @expectedExceptionMessage Couldn't find page variant to store Panels display
+   * @expectedExceptionMessage Couldn't find display variant to store Panels display
    */
   public function testSaveDoesntExist() {
     $this->panelsDisplay->setConfiguration()->shouldNotBeCalled();
@@ -141,7 +141,7 @@ class PanelsStorageTest extends UnitTestCase {
    * @covers ::save
    *
    * @expectedException \Exception
-   * @expectedExceptionMessage Page variant doesn't use a Panels display variant
+   * @expectedExceptionMessage Display variant doesn't use a Panels display variant
    */
   public function testSaveNotPanels() {
     $this->storage->load('not_a_panel')->willReturn($this->displayVariantNotPanels->reveal());
