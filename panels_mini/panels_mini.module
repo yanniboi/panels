@@ -15,5 +15,4 @@ function panels_mini_block_view_alter(&$build, $block) {
       'route_parameters' => ['mini_panel' => $block->getDerivativeId()],
     ];
   }
-
 }
