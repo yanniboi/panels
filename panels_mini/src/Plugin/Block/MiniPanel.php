@@ -114,8 +114,13 @@ class MiniPanel extends BlockBase implements ContextAwarePluginInterface, Contai
     $variants = $this->filterDisplayVariants($variants);
     $variant = reset($variants);
 
-    $view_builder = $this->entityManager->getViewBuilder($variant->getEntityTypeId());
-    $build = $view_builder->view($variant);
+    if ($variant) {
+      $view_builder = $this->entityManager->getViewBuilder($variant->getEntityTypeId());
+      $build = $view_builder->view($variant);
+    }
+    else {
+      $build = [];
+    }
 
 //    CacheableMetadata::createFromObject($this->getContext('mini_panel'))
 //      ->applyTo($build);
