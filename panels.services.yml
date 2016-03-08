@@ -13,7 +13,3 @@ services:
     arguments: ['@panels.storage_manager']
     tags:
       - { name: access_check, applies_to: _panels_storage_access }
-  panels.display_route_enhancer:
-    class: Drupal\panels\Routing\Enhancer\DisplayRouteEnhancer
-    tags:
-      - { name: route_enhancer, priority: 50 }

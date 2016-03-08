@@ -62,7 +62,7 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
    * @param string $id
    *   The page variant entity's id.
    *
-   * @return \Drupal\panels\Entity\DisplayVariantInterface
+   * @return \Drupal\ctools\Entity\DisplayVariantInterface
    */
   protected function loadDisplayVariant($id) {
     return $this->entityTypeManager->getStorage('display_variant')->load($id);

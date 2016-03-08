@@ -7,8 +7,8 @@
 
 namespace Drupal\panels_mini\Entity;
 
-use Drupal\panels\Entity\DisplayBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\ctools\Entity\DisplayBase;
 
 /**
  * Defines a Mini Panel entity class.
@@ -18,7 +18,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *   label = @Translation("MiniPanel"),
  *   handlers = {
  *     "list_builder" = "Drupal\panels_mini\Entity\MiniPanelsListBuilder",
- *     "access" = "Drupal\panels\Entity\DisplayAccess",
+ *     "access" = "Drupal\ctools\Entity\DisplayAccess",
  *     "form" = {
  *       "add" = "Drupal\panels_mini\Form\MiniPanelAddForm",
  *       "edit" = "Drupal\panels_mini\Form\MiniPanelEditForm",

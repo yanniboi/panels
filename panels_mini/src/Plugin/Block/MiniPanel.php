@@ -16,7 +16,7 @@ use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Plugin\Exception\ContextException;
-use Drupal\panels\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
 
 /**
  * Provides a block to view a specific entity.
@@ -106,7 +106,7 @@ class MiniPanel extends BlockBase implements ContextAwarePluginInterface, Contai
    * {@inheritdoc}
    */
   public function build() {
-    /** @var $mini_panel \Drupal\panels\Entity\DisplayInterface */
+    /** @var $mini_panel \Drupal\ctools\Entity\DisplayInterface */
     $mini_panel = $this->entityManager->getStorage('mini_panel')->load($this->getDerivativeId());
     $mini_panel->setContexts($this->getContexts());
 
@@ -174,7 +174,6 @@ class MiniPanel extends BlockBase implements ContextAwarePluginInterface, Contai
     return ($a_weight < $b_weight) ? -1 : 1;
   }
 
-
   /**
    * Checks access of a display variant.
    *
@@ -185,7 +184,7 @@ class MiniPanel extends BlockBase implements ContextAwarePluginInterface, Contai
    *   TRUE if the variant is accessible, FALSE otherwise.
    */
   protected function checkDisplayVariantAccess($display_variant_id) {
-    /** @var \Drupal\panels\Entity\DisplayVariantInterface $variant */
+    /** @var \Drupal\ctools\Entity\DisplayVariantInterface $variant */
     $variant = \Drupal::entityTypeManager()->getStorage('display_variant')->load($display_variant_id);
 
     try {

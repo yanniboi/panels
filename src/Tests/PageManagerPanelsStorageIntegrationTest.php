@@ -7,7 +7,7 @@
 
 namespace Drupal\panels\Tests;
 
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -63,7 +63,7 @@ class PageManagerPanelsStorageIntegrationTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
 
-    /** @var \Drupal\panels\Entity\DisplayVariantInterface $display_variant */
+    /** @var \Drupal\ctools\Entity\DisplayVariantInterface $display_variant */
     $display_variant = DisplayVariant::load('panels_1');
     /** @var \Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant $panels_display */
     $panels_display = $display_variant->getVariantPlugin();

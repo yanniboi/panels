@@ -8,7 +8,7 @@
 namespace Drupal\panels_mini\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\panels\Form\DisplayFormBase;
+use Drupal\ctools\Form\DisplayFormBase;
 
 /**
  * Provides a form for adding a new mini panel entity.
@@ -27,7 +27,6 @@ class MiniPanelAddForm extends DisplayFormBase {
     return $form;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -38,4 +37,5 @@ class MiniPanelAddForm extends DisplayFormBase {
       'mini_panel' => $this->entity->id(),
     ]);
   }
+
 }

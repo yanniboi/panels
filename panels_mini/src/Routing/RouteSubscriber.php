@@ -7,9 +7,9 @@
 
 namespace Drupal\panels_mini\Routing;
 
-use Drupal\panels\Routing\DisplayRouteSubscriberBase;
+use Drupal\ctools\Routing\DisplayRouteSubscriberBase;
 
-class RouteSubscriber extends DisplayRouteSubscriberBase {
+class RouteSubscriber extends \Drupal\ctools\Routing\DisplayRouteSubscriberBase {
 
   /**
    * {@inheritdoc}

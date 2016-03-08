@@ -11,7 +11,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\panels\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
 use Drupal\panels\Plugin\PanelsStorage\PageManagerPanelsStorage;
 use Drupal\page_manager\Plugin\DisplayVariant\HttpStatusCodeDisplayVariant;
 use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
@@ -33,12 +33,12 @@ class PanelsStorageTest extends UnitTestCase {
   protected $panelsDisplay;
 
   /**
-   * @var \Drupal\panels\Entity\DisplayVariantInterface|\Prophecy\Prophecy\ProphecyInterface
+   * @var \Drupal\ctools\Entity\DisplayVariantInterface|\Prophecy\Prophecy\ProphecyInterface
    */
   protected $displayVariant;
 
   /**
-   * @var \Drupal\panels\Entity\DisplayVariantInterface|\Prophecy\Prophecy\ProphecyInterface
+   * @var \Drupal\ctools\Entity\DisplayVariantInterface|\Prophecy\Prophecy\ProphecyInterface
    */
   protected $displayVariantNotPanels;
 

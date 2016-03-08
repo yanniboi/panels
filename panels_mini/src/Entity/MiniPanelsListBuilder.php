@@ -29,7 +29,7 @@ class MiniPanelsListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\panels\Entity\DisplayInterface $entity */
+    /** @var \Drupal\ctools\Entity\DisplayInterface $entity */
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
 

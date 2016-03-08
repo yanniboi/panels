@@ -24,7 +24,7 @@ class MiniPanelDeriver extends DeriverBase {
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
     foreach (MiniPanel::loadMultiple() as $id => $mini_panel) {
-      /** @var \Drupal\panels\Entity\DisplayInterface $mini_panel */
+      /** @var \Drupal\ctools\Entity\DisplayInterface $mini_panel */
       $this->derivatives[$id] = $base_plugin_definition;
       $this->derivatives[$id]['admin_label'] = $this->t('Mini Panel (@label)', ['@label' => $mini_panel->label()]);
       foreach ($mini_panel->getParameters() as $parameter) {

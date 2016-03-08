@@ -6,7 +6,7 @@
  * Core functionality for the Panels engine.
  */
 
-use \Drupal\panels\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
 
 define('PANELS_REQUIRED_CTOOLS_API', '2.0-alpha');
 
