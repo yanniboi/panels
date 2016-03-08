@@ -8,6 +8,7 @@
 namespace Drupal\panels_mini\Entity;
 
 use Drupal\panels\Entity\DisplayBase;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * Defines a Mini Panel entity class.
@@ -43,4 +44,20 @@ use Drupal\panels\Entity\DisplayBase;
  *   },
  * )
  */
-class MiniPanel extends DisplayBase {}
+class MiniPanel extends DisplayBase {
+
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
+    // Invalidate the block cache to update derivatives.
+    \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+  }
+
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+
+    // Invalidate the block cache to update derivatives.
+    \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+  }
+
+}
