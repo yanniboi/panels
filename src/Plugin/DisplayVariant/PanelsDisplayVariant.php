@@ -17,11 +17,13 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
-use Drupal\ctools\Plugin\BlockPluginCollection;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
+use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\layout_plugin\Layout;
 use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface;
+use Drupal\page_manager_ui\Form\VariantPluginContentForm;
+use Drupal\panels\Form\LayoutPluginSelector;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,7 +36,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin_label = @Translation("Panels")
  * )
  */
-class PanelsDisplayVariant extends BlockDisplayVariant {
+class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardInterface {
+
+  public function getWizardOperations($cached_values) {
+    return [
+      'layout' => [
+        'title' => $this->t('Layout'),
+        'form' => LayoutPluginSelector::class
+      ],
+      'content' => [
+        'title' => $this->t('Content'),
+        'form' => VariantPluginContentForm::class
+      ]
+    ];
+  }
 
   /**
    * The module handler.
