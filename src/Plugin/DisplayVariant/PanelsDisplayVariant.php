@@ -24,6 +24,7 @@ use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface;
 use Drupal\page_manager_ui\Form\VariantPluginContentForm;
 use Drupal\panels\Form\LayoutPluginSelector;
+use Drupal\panels\Form\LayoutPluginUpdate;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -340,7 +341,7 @@ class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardIn
    *   An array with two values: the new form array and form state object.
    */
   protected function getLayoutSettingsForm(array &$form, FormStateInterface $form_state) {
-    $layout_settings_form = NestedArray::getValue($form, array_merge($form['#variant_array_parents'], ['layout_settings_wrapper', 'layout_settings']));
+    $layout_settings_form = NestedArray::getValue($form, ['layout_settings_wrapper', 'layout_settings']);
     $layout_settings_form_state = (new FormState())->setValues($form_state->getValue('layout_settings'));
     return [$layout_settings_form, $layout_settings_form_state];
   }
