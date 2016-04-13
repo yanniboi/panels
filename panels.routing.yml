@@ -1,0 +1,8 @@
+panels.layout.change_form:
+  path: '/admin/structure/panels/{tempstore_id}/{machine_name}/layout/{step}'
+  defaults:
+    _wizard: '\Drupal\panels\Wizard\LayoutChangeWizard'
+    _title: 'Add page variant'
+    step: 'settings'
+  requirements:
+    _permission: 'administer pages'

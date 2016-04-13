@@ -17,11 +17,14 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
-use Drupal\ctools\Plugin\BlockPluginCollection;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
+use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\layout_plugin\Layout;
 use Drupal\layout_plugin\Plugin\Layout\LayoutInterface;
 use Drupal\layout_plugin\Plugin\Layout\LayoutPluginManagerInterface;
+use Drupal\page_manager_ui\Form\VariantPluginContentForm;
+use Drupal\panels\Form\LayoutPluginSelector;
+use Drupal\panels\Form\LayoutPluginUpdate;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderInterface;
 use Drupal\panels\Plugin\DisplayBuilder\DisplayBuilderManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,7 +37,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin_label = @Translation("Panels")
  * )
  */
-class PanelsDisplayVariant extends BlockDisplayVariant {
+class PanelsDisplayVariant extends BlockDisplayVariant implements PluginWizardInterface {
 
   /**
    * The module handler.
@@ -323,76 +326,7 @@ class PanelsDisplayVariant extends BlockDisplayVariant {
       ];
     }
 
-    $form['layout'] = [
-      '#title' => $this->t('Layout'),
-      '#type' => 'select',
-      '#options' => Layout::getLayoutOptions(['group_by_category' => TRUE]),
-      '#default_value' => $this->configuration['layout'] ?: NULL,
-    ];
-
-    if (!empty($this->configuration['layout'])) {
-      $form['layout']['#ajax'] = [
-        'callback' => [$this, 'layoutSettingsAjaxCallback'],
-        'wrapper' => 'layout-settings-wrapper',
-        'effect' => 'fade',
-      ];
-
-      // If a layout is already selected, show the layout settings.
-      $form['layout_settings_wrapper'] = [
-        '#type' => 'fieldset',
-        '#title' => $this->t('Layout settings'),
-        '#prefix' => '<div id="layout-settings-wrapper">',
-        '#suffix' => '</div>',
-      ];
-      $form['layout_settings_wrapper']['layout_settings'] = [];
-
-      // Process callback to configure #parents correctly on settings, since
-      // we don't know where in the form hierarchy our settings appear.
-      $form['#process'][] = [$this, 'layoutSettingsProcessCallback'];
-    }
-
     return $form;
-  }
-
-  /**
-   * Render API callback: builds the layout settings elements.
-   */
-  public function layoutSettingsProcessCallback(array &$element, FormStateInterface $form_state, array &$complete_form) {
-    $parents_base = $element['#parents'];
-    $layout_parent = array_merge($parents_base, ['layout']);
-    $layout_settings_parent = array_merge($parents_base, ['layout_settings']);
-
-    $settings_element =& $element['layout_settings_wrapper']['layout_settings'];
-
-    // Set the #parents on the layout_settings so they end up as a sibling of
-    // layout.
-    $layout_settings_parents = array_merge($element['#parents'], ['layout_settings']);
-    $settings_element['#parents'] = $layout_settings_parents;
-    $settings_element['#tree'] = TRUE;
-
-    // Get the layout name in a way that works regardless of whether we're
-    // getting the value via AJAX or not.
-    $layout_name = NestedArray::getValue($form_state->getUserInput(), $layout_parent) ?: $element['layout']['#default_value'];
-
-    // Place the layout settings on the form if a layout is selected.
-    if ($layout_name) {
-      $layout = Layout::layoutPluginManager()->createInstance($layout_name, $form_state->getValue($layout_settings_parent, $this->configuration['layout_settings'] ?: []));
-      $settings_element = $layout->buildConfigurationForm($settings_element, $form_state);
-    }
-
-    // Store the array parents for our element so that we can use it to pull out
-    // the layout settings in the validate and submit functions.
-    $complete_form['#variant_array_parents'] = $element['#array_parents'];
-
-    return $element;
-  }
-
-  /**
-   * Render API callback: gets the layout settings elements.
-   */
-  public function layoutSettingsAjaxCallback(array $form, FormStateInterface $form_state) {
-    $variant_array_parents = $form['#variant_array_parents'];
-    return NestedArray::getValue($form, array_merge($variant_array_parents, ['layout_settings_wrapper']));
   }
 
   /**
@@ -407,7 +341,7 @@ class PanelsDisplayVariant extends BlockDisplayVariant {
    *   An array with two values: the new form array and form state object.
    */
   protected function getLayoutSettingsForm(array &$form, FormStateInterface $form_state) {
-    $layout_settings_form = NestedArray::getValue($form, array_merge($form['#variant_array_parents'], ['layout_settings_wrapper', 'layout_settings']));
+    $layout_settings_form = NestedArray::getValue($form, ['layout_settings_wrapper', 'layout_settings']);
     $layout_settings_form_state = (new FormState())->setValues($form_state->getValue('layout_settings'));
     return [$layout_settings_form, $layout_settings_form_state];
   }
@@ -482,6 +416,22 @@ class PanelsDisplayVariant extends BlockDisplayVariant {
       'page_title' => '',
       'storage_type' => '',
       'storage_id' => '',
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getWizardOperations($cached_values) {
+    return [
+      'layout' => [
+        'title' => $this->t('Layout'),
+        'form' => LayoutPluginSelector::class
+      ],
+      'content' => [
+        'title' => $this->t('Content'),
+        'form' => VariantPluginContentForm::class
+      ]
     ];
   }
 
