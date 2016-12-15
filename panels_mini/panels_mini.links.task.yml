@@ -1,0 +1,4 @@
+entity.mini_panel.collection:
+  route_name: entity.mini_panel.collection
+  base_route: block.admin_display
+  title: 'Mini Panels'

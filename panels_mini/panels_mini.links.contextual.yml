@@ -1,0 +1,4 @@
+mini_panel_configure:
+  title: 'Configure mini panel'
+  route_name: 'entity.mini_panel.edit_form'
+  group: 'mini_panel'

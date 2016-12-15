@@ -1,0 +1,3 @@
+panels_mini.mini_panel.*:
+  type: ctools.display_base
+  label: 'Mini Panel'

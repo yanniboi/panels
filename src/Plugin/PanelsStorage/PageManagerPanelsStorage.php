@@ -57,15 +57,15 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
   }
 
   /**
-   * Load a page variant entity.
+   * Load a display variant entity.
    *
    * @param string $id
    *   The page variant entity's id.
    *
-   * @return \Drupal\page_manager\PageVariantInterface
+   * @return \Drupal\ctools\Entity\DisplayVariantInterface
    */
-  protected function loadPageVariant($id) {
-    return $this->entityTypeManager->getStorage('page_variant')->load($id);
+  protected function loadDisplayVariant($id) {
+    return $this->entityTypeManager->getStorage('display_variant')->load($id);
   }
 
   /**
@@ -73,16 +73,16 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
    */
   public function save(PanelsDisplayVariant $panels_display) {
     $id = $panels_display->getStorageId();
-    if ($id && ($page_variant = $this->loadPageVariant($id))) {
-      $variant_plugin = $page_variant->getVariantPlugin();
+    if ($id && ($display_variant = $this->loadDisplayVariant($id))) {
+      $variant_plugin = $display_variant->getVariantPlugin();
       if (!($variant_plugin instanceof PanelsDisplayVariant)) {
-        throw new \Exception("Page variant doesn't use a Panels display variant");
+        throw new \Exception("Display variant doesn't use a Panels display variant");
       }
       $variant_plugin->setConfiguration($panels_display->getConfiguration());
-      $page_variant->save();
+      $display_variant->save();
     }
     else {
-      throw new \Exception("Couldn't find page variant to store Panels display");
+      throw new \Exception("Couldn't find display variant to store Panels display");
     }
   }
 
@@ -90,8 +90,8 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
    * {@inheritdoc}
    */
   public function load($id) {
-    if ($page_variant = $this->loadPageVariant($id)) {
-      $panels_display = $page_variant->getVariantPlugin();
+    if ($display_variant = $this->loadDisplayVariant($id)) {
+      $panels_display = $display_variant->getVariantPlugin();
 
       // If this page variant doesn't have a Panels display on it, then we treat
       // it the same as if there was no such page variant.
@@ -101,7 +101,7 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
 
       // Pass down the contexts because the display has no other way to get them
       // from the variant.
-      $panels_display->setContexts($page_variant->getContexts());
+      $panels_display->setContexts($display_variant->getContexts());
 
       return $panels_display;
     }
@@ -114,8 +114,8 @@ class PageManagerPanelsStorage extends PanelsStorageBase implements ContainerFac
     if ($op == 'change layout') {
       $op = 'update';
     }
-    if ($page_variant = $this->loadPageVariant($id)) {
-      return $page_variant->access($op, $account, TRUE);
+    if ($display_variant = $this->loadDisplayVariant($id)) {
+      return $display_variant->access($op, $account, TRUE);
     }
 
     return AccessResult::forbidden();
