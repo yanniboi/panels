@@ -1,0 +1,5 @@
+entity.mini_panel.add_form:
+  route_name: entity.mini_panel.add_form
+  title: 'Add mini panel'
+  appears_on:
+    - 'entity.mini_panel.collection'

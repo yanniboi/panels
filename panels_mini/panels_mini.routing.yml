@@ -1,0 +1,122 @@
+entity.mini_panel.collection:
+  path: '/admin/structure/block/mini-panels'
+  defaults:
+    _entity_list: 'mini_panel'
+    _title: 'Mini Panels library'
+  requirements:
+    _permission: 'administer blocks'
+
+entity.mini_panel.add_form:
+  path: '/admin/structure/block/mini-panels/add'
+  defaults:
+    _entity_form: 'mini_panel.add'
+    _title: 'Add new mini panel'
+  requirements:
+    _entity_create_access: mini_panel
+
+entity.mini_panel.edit_form:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}'
+  defaults:
+    _entity_form: 'mini_panel.edit'
+    _title_callback: '\Drupal\panels_mini\Controller\MiniPanelController::editMiniPanelTitle'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.delete_form:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/delete'
+  defaults:
+    _entity_form: 'mini_panel.delete'
+    _title: 'Delete mini panel'
+  requirements:
+    _entity_access: mini_panel.delete
+
+#
+#entity.page.enable:
+#  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/enable'
+#  defaults:
+#    _controller: '\Drupal\panels_mini\Controller\PageManagerController::performPageOperation'
+#    op: 'enable'
+#  requirements:
+#    _entity_access: 'mini_panel.update'
+#
+#entity.page.disable:
+#  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/disable'
+#  defaults:
+#    _controller: '\Drupal\panels_mini\Controller\PageManagerController::performPageOperation'
+#    op: 'disable'
+#  requirements:
+#    _entity_access: 'mini_panel.update'
+
+#### Access Conditions
+
+entity.mini_panel.access_condition_select:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/access/select'
+  defaults:
+    _controller: '\Drupal\panels_mini\Controller\MiniPanelController::selectAccessCondition'
+    _title: 'Select access condition'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.access_condition_add:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/access/add/{condition_id}'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\AccessConditionAddForm'
+    _title: 'Add new access condition'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.access_condition_edit:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/access/edit/{condition_id}'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\AccessConditionEditForm'
+    _title_callback: '\Drupal\panels_mini\Controller\MiniPanelController::editAccessConditionTitle'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.access_condition_delete:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/access/delete/{condition_id}'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\AccessConditionDeleteForm'
+    _title: 'Delete access condition'
+  requirements:
+    _entity_access: mini_panel.update
+
+#### Parameters
+
+entity.mini_panel.parameter_add:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/parameter/add'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\ParameterAddForm'
+    _title: 'Add parameter'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.parameter_edit:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/parameter/edit/{name}'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\ParameterEditForm'
+#    _title_callback: '\Drupal\panels_mini\Controller\MiniPanelController::editParameterTitle'
+    _title: 'Edit parameter'
+  requirements:
+    _entity_access: mini_panel.update
+
+entity.mini_panel.parameter_delete:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/parameter/delete/{name}'
+  defaults:
+    _form: '\Drupal\panels_mini\Form\ParameterDeleteForm'
+    _title: 'Delete parameter'
+  requirements:
+    _entity_access: mini_panel.update
+
+#### Variants
+
+panels_mini.variant_select:
+  path: '/admin/structure/block/mini-panels/manage/{mini_panel}/add'
+  defaults:
+    _controller: '\Drupal\panels_mini\Controller\MiniPanelController::selectVariant'
+    _title: 'Select variant'
+  requirements:
+    _entity_access: mini_panel.update
+
+
+
